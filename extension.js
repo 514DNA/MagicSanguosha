@@ -13,6 +13,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "蓬莱山辉夜":["female","wei",3,["神宝","难题"],["zhu","des:永远与须臾的罪人"]],
             "古明地恋":["female","shu",3,["本我","超我","埋火","蔷薇"],["des:紧闭的恋之瞳"]],
             "古明地觉":["female","shu",3,["读心","催眠"],["zhu","des:第三只眼"]],
+            "雾雨魔理沙":["female","qun",3,["天仪","魔炮","彗星"],["des:普通的魔法使"]],
         },
         translate:{
             "铃仙":"铃仙",
@@ -23,6 +24,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "蓬莱山辉夜":"蓬莱山辉夜",
             "古明地恋":"古明地恋",
             "古明地觉":"古明地觉",
+            "雾雨魔理沙":"雾雨魔理沙",
         },
     },
     card:{
@@ -673,79 +675,79 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 },
             },
             "读心":{
-                audio:2,
-				enable:'phaseUse',
-				usable:1,
-				filterTarget:function(card,player,target){
-					return target!=player&&target.countCards('h');
-				},
-				content:function(){
-					"step 0"
-					event.videoId=lib.status.videoId++;
-					var cards=target.getCards('h');
-					if(player.isOnline2()){
-						player.send(function(cards,id){
-							ui.create.dialog('想起·恐怖的记忆',cards).videoId=id;
-						},cards,event.videoId);
-					}
-					event.dialog=ui.create.dialog('想起·恐怖的记忆',cards);
-					event.dialog.videoId=event.videoId;
-					if(!event.isMine()){
-						event.dialog.style.display='none';
-					}
-					player.chooseButton().set('filterButton',function(button){
-						return true;
-					}).set('dialog',event.videoId);
-					"step 1"
-					if(result.bool){
-						event.card=result.links[0];
-						var func=function(card,id){
-							var dialog=get.idDialog(id);
-							if(dialog){
-								for(var i=0;i<dialog.buttons.length;i++){
-									if(dialog.buttons[i].link==card){
-										dialog.buttons[i].classList.add('selectedx');
-									}
-									else{
-										dialog.buttons[i].classList.add('unselectable');
-									}
-								}
-							}
-						}
-						if(player.isOnline2()){
-							player.send(func,event.card,event.videoId);
-						}
-						else if(event.isMine()){
-							func(event.card,event.videoId);
-						}
-					}
-					else{
-						if(player.isOnline2()){
-							player.send('closeDialog',event.videoId);
-						}
-						event.dialog.close();
-						event.finish();
-					}
-					"step 2"
-					if(player.isOnline2()){
-						player.send('closeDialog',event.videoId);
-					}
-					event.dialog.close();
-					var card=event.card;
+                audio:"ext:东方project:2",
+                enable:"phaseUse",
+                usable:1,
+                filterTarget:function (card,player,target){
+                    return target!=player&&target.countCards('h');
+                },
+                content:function (){
+                    "step 0"
+                    event.videoId=lib.status.videoId++;
+                    var cards=target.getCards('h');
+                    if(player.isOnline2()){
+                        player.send(function(cards,id){
+                            ui.create.dialog('想起·恐怖的记忆',cards).videoId=id;
+                        },cards,event.videoId);
+                    }
+                    event.dialog=ui.create.dialog('想起·恐怖的记忆',cards);
+                    event.dialog.videoId=event.videoId;
+                    if(!event.isMine()){
+                        event.dialog.style.display='none';
+                    }
+                    player.chooseButton().set('filterButton',function(button){
+                        return true;
+                    }).set('dialog',event.videoId);
+                    "step 1"
+                    if(result.bool){
+                        event.card=result.links[0];
+                        var func=function(card,id){
+                            var dialog=get.idDialog(id);
+                            if(dialog){
+                                for(var i=0;i<dialog.buttons.length;i++){
+                                    if(dialog.buttons[i].link==card){
+                                        dialog.buttons[i].classList.add('selectedx');
+                                    }
+                                    else{
+                                        dialog.buttons[i].classList.add('unselectable');
+                                    }
+                                }
+                            }
+                        }
+                        if(player.isOnline2()){
+                            player.send(func,event.card,event.videoId);
+                        }
+                        else if(event.isMine()){
+                            func(event.card,event.videoId);
+                        }
+                    }
+                    else{
+                        if(player.isOnline2()){
+                            player.send('closeDialog',event.videoId);
+                        }
+                        event.dialog.close();
+                        event.finish();
+                    }
+                    "step 2"
+                    if(player.isOnline2()){
+                        player.send('closeDialog',event.videoId);
+                    }
+                    event.dialog.close();
+                    var card=event.card;
                     player.gain(card);
                     player.$gain2(card);
-					event.finish();
-				},
-				ai:{
-					threaten:1.5,
-					result:{
-						target:function(player,target){
-							return -target.countCards('h');
-						}
-					},
-					order:10,
-					expose:0.4,
-                }
+                    event.finish();
+                },
+                ai:{
+                    threaten:1.5,
+                    result:{
+                        target:function (player,target){
+                            return -target.countCards('h');
+                        },
+                    },
+                    order:10,
+                    expose:0.4,
+                },
             },
             "催眠":{
                 enable:"phaseUse",
@@ -763,66 +765,68 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 },
             },
             "本我":{
-                audio:true,
-                trigger:{player:'phaseEnd'},
+                audio:"ext:东方project:true",
+                trigger:{
+                    player:"phaseEnd",
+                },
                 filter:function (event,player){
                     return ((player.countCards('h',{color:'black'}))>0);
                 },
-    			content:function(){
+                content:function (){
                     "step 0"
-    				player.chooseCardTarget({
-    					filterCard:function(card,player){
-    						return get.color(card)=='black'&&lib.filter.cardDiscardable(card,player);
-    					},
-    					filterTarget:function(card,player,target){
-    						return player!=target;
-    					},
-    					ai1:function(card){
-    						return 10-get.value(card);
-    					},
-    					ai2:function(target){
-    						var att=get.attitude(_status.event.player,target);
-    						var trigger=_status.event.getTrigger();
-    						var da=0;
-    						if(_status.event.player.hp==1){
-    							da=10;
-    						}
-    						if(trigger.num>1){
-    							if(target.maxHp>5&&target.hp>1) return -att/10+da;
-    							return -att+da;
-    						}
-    						var eff=get.damageEffect(target,trigger.source,target,trigger.nature);
-    						if(att==0) return 0.1+da;
-    						if(eff>=0&&trigger.num==1){
-    							return att+da;
-    						}
-    						if(target.hp==target.maxHp) return -att+da;
-    						if(target.hp==1){
-    							if(!target.hasSkillTag('maixie')){
-    									return -att+da;
-    							}
-    							return da;
-    						}
-    						if(target.hp==target.maxHp-1){
-    							if(target.hasSkillTag('maixie')) return att/5+da;
-    							if(att>0) return 0.02+da;
-    							return 0.05+da;
-    						}
-    						return att/2+da;
-    					},
-    					prompt:get.prompt('本我')
-    				});
-    				"step 1"
-    				if(result.bool){
-    					player.logSkill(event.name,result.targets);
+                    player.chooseCardTarget({
+                        filterCard:function(card,player){
+                            return get.color(card)=='black'&&lib.filter.cardDiscardable(card,player);
+                        },
+                        filterTarget:function(card,player,target){
+                            return player!=target;
+                        },
+                        ai1:function(card){
+                            return 10-get.value(card);
+                        },
+                        ai2:function(target){
+                            var att=get.attitude(_status.event.player,target);
+                            var trigger=_status.event.getTrigger();
+                            var da=0;
+                            if(_status.event.player.hp==1){
+                                da=10;
+                            }
+                            if(trigger.num>1){
+                                if(target.maxHp>5&&target.hp>1) return -att/10+da;
+                                return -att+da;
+                            }
+                            var eff=get.damageEffect(target,trigger.source,target,trigger.nature);
+                            if(att==0) return 0.1+da;
+                            if(eff>=0&&trigger.num==1){
+                                return att+da;
+                            }
+                            if(target.hp==target.maxHp) return -att+da;
+                            if(target.hp==1){
+                                if(!target.hasSkillTag('maixie')){
+                                        return -att+da;
+                                }
+                                return da;
+                            }
+                            if(target.hp==target.maxHp-1){
+                                if(target.hasSkillTag('maixie')) return att/5+da;
+                                if(att>0) return 0.02+da;
+                                return 0.05+da;
+                            }
+                            return att/2+da;
+                        },
+                        prompt:get.prompt('本我')
+                    });
+                    "step 1"
+                    if(result.bool){
+                        player.logSkill(event.name,result.targets);
                         player.discard(result.cards[0]);
                         result.targets[0].damage(1+player.maxHp-player.hp);
                         player.turnOver();
-    				}
-    				else{
-    					event.finish();
                     }
-    			},
+                    else{
+                        event.finish();
+                    }
+                },
             },
             "超我":{
                 trigger:{
@@ -873,11 +877,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 },
             },
             "蔷薇2":{
-                trigger:{player:'turnOverEnd'},
+                trigger:{
+                    player:"turnOverEnd",
+                },
                 filter:function (event,player){
                     return player.countCards('h')>1;
                 },
-    			content:function(){
+                content:function (){
                     "step 0"
                     player.chooseToDiscard(2,true,'h');
                     event.targets=game.filterPlayer();
@@ -889,6 +895,95 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                         event.targets.shift().damage();
                         event.redo();
                     }
+                },
+            },
+            "天仪":{
+                forced:true,
+    			trigger:{player:'discardAfter'},
+    			filter:function(event,player){
+                    if(player.storage.tian1yi2&&player.storage.tian1yi2.length >= 16)
+                        return false;
+    				for(var i=0;i<event.cards.length;i++){
+    					if(get.position(event.cards[i])=='d'){
+    						return true;
+    					}
+    				}
+    				return false;
+    			},
+    			content:function(){
+    				event.cards=trigger.cards.slice(0);
+                    for(var i=0;i<event.cards.length;i++){
+                        if((player.storage.tian1yi2.length < 16) && (get.position(event.cards[i]) =='d'))
+                        {
+                            player.storage.tian1yi2.push(event.cards[i]);
+                        }
+    				}
+                },
+                init:function(player){
+    				player.storage.tian1yi2=[];
+    			},
+            },
+            "魔炮":{
+                enable:"phaseUse",
+                position:"h",
+                usable:1,
+                selectCard:2,
+                filterCard:true,
+                usable:1,
+                filter:function(event,player){
+    				return (player.storage.tian1yi2.length >= 2);
+                },
+                filterTarget:function (card,player,target){
+                    return (player!=target);
+                },
+                content:function (){
+                    var Marisa_temp = 0;
+                    if(player.storage.tian1yi2.length >= 2 && player.storage.tian1yi2.length <= 3)
+                    {
+                        Marisa_temp = 1;
+                    }
+                    if(player.storage.tian1yi2.length >= 4 && player.storage.tian1yi2.length <= 7)
+                    {
+                        Marisa_temp = 2;
+                    }
+                    if(player.storage.tian1yi2.length >= 8 && player.storage.tian1yi2.length <= 15)
+                    {
+                        Marisa_temp = 3;
+                    }
+                    if(player.storage.tian1yi2.length == 16)
+                    {
+                        Marisa_temp = 4;
+                    }
+                    event.targets2=game.filterPlayer();
+                    event.targets2.remove(player);
+                    event.targets2.remove(target);
+                    if(Marisa_temp >= 1)
+                        target.damage(Marisa_temp);
+                    if(Math.floor(Marisa_temp/2) >= 1)
+                    {
+                        for(var i = 0;i < event.targets2.length;i++)
+                        {
+                            if(get.distance(target,event.targets2[i])<=1)
+                            {
+                                event.targets2[i].damage(Math.floor(Marisa_temp/2));
+                            }
+                        }
+                    }
+                },
+            },
+            "彗星":{
+                trigger:{
+                    source:"damageEnd",
+                },
+                forced:true,
+                filter:function (event,player){
+                    if( event.player!=player && event.player.countCards('he')) 
+                         return true;
+                    else
+                        return false;
+                },
+                content:function (){
+                    player.gainPlayerCard(get.prompt('彗星',trigger.player),trigger.player,get.buttonValue,'he').set('logSkill',['彗星',trigger.player]);
                 },
             },
         },
@@ -930,6 +1025,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "埋火":"埋火",
             "蔷薇":"蔷薇",
             "蔷薇2":"蔷薇",
+            "天仪":"天仪",
+            "魔炮":"魔炮",
+            "彗星":"彗星",
             "幻视_info":"幻视调律",
             "狂气_info":"狂气之瞳",
             "红魔_info":"吸血鬼幻想",
@@ -951,6 +1049,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "超我_info":"超我·抑制",
             "埋火_info":"恋爱的埋火",
             "蔷薇_info":"地底蔷薇",
+            "天仪_info":"太阳系仪",
+            "魔炮_info":"极限火花",
+            "彗星_info":"爆裂彗星",
         },
     },
     intro:"",
@@ -958,4 +1059,4 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
     diskURL:"",
     forumURL:"",
     version:"1.0",
-},files:{"character":["古明地恋.jpg","古明地觉.jpg"],"card":[],"skill":[]}}})
+},files:{"character":["古明地觉.jpg","雾雨魔理沙.jpg"],"card":[],"skill":[]}}})
