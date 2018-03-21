@@ -14,6 +14,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "古明地恋":["female","shu",3,["本我","超我","埋火","蔷薇"],["des:紧闭的恋之瞳"]],
             "古明地觉":["female","shu",3,["读心","催眠"],["zhu","des:第三只眼"]],
             "雾雨魔理沙":["female","qun",3,["天仪","魔炮","彗星"],["des:普通的魔法使"]],
+            "爱丽丝":["female","qun",3,["文乐"],["des:七色的魔法使"]],
+            "十六夜咲夜":["female","shu",3,["飞刀","幻世"],["des:完美潇洒的女仆"]],
         },
         translate:{
             "铃仙":"铃仙",
@@ -25,6 +27,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "古明地恋":"古明地恋",
             "古明地觉":"古明地觉",
             "雾雨魔理沙":"雾雨魔理沙",
+            "爱丽丝":"爱丽丝",
+            "十六夜咲夜":"十六夜咲夜",
         },
     },
     card:{
@@ -140,6 +144,15 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 content:function (){
                     target.damage();
                 },
+                ai:{
+                    damage:true,
+    				order:8,
+    				result:{
+    					target:function(player,target){
+    						return get.damageEffect(target,player);
+    					}
+    				}
+    			},
             },
             "破碎":{
                 trigger:{
@@ -375,6 +388,15 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 content:function (){
                     target.damage(1,'fire');
                 },
+                ai:{
+                    damage:true,
+    				order:8,
+    				result:{
+    					target:function(player,target){
+    						return get.damageEffect(target,player);
+    					}
+    				}
+    			},
             },
             "神宝":{
                 unique:true,
@@ -675,7 +697,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 },
             },
             "读心":{
-                audio:"ext:东方project:2",
                 enable:"phaseUse",
                 usable:1,
                 filterTarget:function (card,player,target){
@@ -827,6 +848,15 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                         event.finish();
                     }
                 },
+                ai:{
+                    damage:true,
+    				order:8,
+    				result:{
+    					target:function(player,target){
+    						return get.damageEffect(target,player);
+    					}
+    				}
+    			},
             },
             "超我":{
                 trigger:{
@@ -899,29 +929,31 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             },
             "天仪":{
                 forced:true,
-    			trigger:{player:'discardAfter'},
-    			filter:function(event,player){
+                trigger:{
+                    player:"discardAfter",
+                },
+                filter:function (event,player){
                     if(player.storage.tian1yi2&&player.storage.tian1yi2.length >= 16)
                         return false;
-    				for(var i=0;i<event.cards.length;i++){
-    					if(get.position(event.cards[i])=='d'){
-    						return true;
-    					}
-    				}
-    				return false;
-    			},
-    			content:function(){
-    				event.cards=trigger.cards.slice(0);
+                    for(var i=0;i<event.cards.length;i++){
+                        if(get.position(event.cards[i])=='d'){
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+                content:function (){
+                    event.cards=trigger.cards.slice(0);
                     for(var i=0;i<event.cards.length;i++){
                         if((player.storage.tian1yi2.length < 16) && (get.position(event.cards[i]) =='d'))
                         {
                             player.storage.tian1yi2.push(event.cards[i]);
                         }
-    				}
+                    }
                 },
-                init:function(player){
-    				player.storage.tian1yi2=[];
-    			},
+                init:function (player){
+                    player.storage.tian1yi2=[];
+                },
             },
             "魔炮":{
                 enable:"phaseUse",
@@ -929,9 +961,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 usable:1,
                 selectCard:2,
                 filterCard:true,
-                usable:1,
-                filter:function(event,player){
-    				return (player.storage.tian1yi2.length >= 2);
+                filter:function (event,player){
+                    return (player.storage.tian1yi2.length >= 2);
                 },
                 filterTarget:function (card,player,target){
                     return (player!=target);
@@ -970,6 +1001,15 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                         }
                     }
                 },
+                ai:{
+                    damage:true,
+    				order:8,
+    				result:{
+    					target:function(player,target){
+    						return get.damageEffect(target,player);
+    					}
+    				}
+    			},
             },
             "彗星":{
                 trigger:{
@@ -985,6 +1025,179 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 content:function (){
                     player.gainPlayerCard(get.prompt('彗星',trigger.player),trigger.player,get.buttonValue,'he').set('logSkill',['彗星',trigger.player]);
                 },
+            },
+            "文乐":{
+                enable:"phaseUse",
+                position:"h",
+                usable:1,
+                selectCard:2,
+                filterCard:true,
+                content:function (){
+                    "step 0"
+                    player.judge(function(card){
+                        if(get.suit(card)=='diamond' && (player.hasSkill('上海') == 0)) 
+                        {
+                            return 4;   
+                        }
+                        else if(get.suit(card)=='club' && (player.hasSkill('京都') == 0)) 
+                        {
+                            return 3;   
+                        }
+                        else if(get.suit(card)=='spade' && (player.hasSkill('伦敦') == 0)) 
+                        {
+                            return 2;   
+                        }
+                        else if(get.suit(card)=='heart' && (player.hasSkill('蓬莱') == 0)) 
+                        {
+                            return 1;   
+                        } 
+                        else
+                        {
+                            return -1;
+                        }          
+                    })
+                    "step 1"
+                    if(result.judge==4){
+                        player.addSkill('上海');
+                        player.maxHp++;
+                        player.update();
+                    }
+                    else if(result.judge==3){
+                        player.addSkill('京都');
+                        player.maxHp++;
+                        player.update();
+                    }
+                    else if(result.judge==2){
+                        player.addSkill('伦敦');
+                        player.maxHp++;
+                        player.update();
+                    }
+                    else if(result.judge==1){
+                        player.addSkill('蓬莱');
+                        player.maxHp++;
+                        player.update();
+                    }
+                },
+            },
+            "上海":{
+                trigger:{
+                    player:["phaseBegin","phaseEnd"],
+                },
+                direct:true,
+                content:function (){
+                    "step 0"
+                    var check= player.countCards('h')>2;
+                    player.chooseTarget(get.prompt('上海'),function(card,player,target){
+                        if(player==target) return false;
+                        return player.canUse({name:'sha'},target,false);
+                    }).set('check',check).set('ai',function(target){
+                        if(!_status.event.check) return 0;
+                        return get.effect(target,{name:'sha'},_status.event.player);
+                    });
+                    "step 1"
+                    if(result.bool){
+                        player.logSkill('上海',result.targets);
+                        player.useCard({name:'sha'},result.targets[0],false);
+                    }
+                },
+            },
+            "京都":{
+                trigger:{
+                    player:"phaseDrawBegin",
+                },
+                forced:true,
+                frequent:true,
+                content:function (){
+                    trigger.num += 2 ;
+                },
+            },
+            "伦敦":{
+                trigger:{
+                    player:"damageBegin",
+                },
+                forced:true,
+                filter:function (event,player){
+                    if(event.source&&event.source.countCards('h') < player.countCards('h')) 
+                        return true;
+                    else
+                        return false;
+                },
+                content:function (){
+                    trigger.cancel();
+                },
+            },
+            "飞刀":{
+                group:["飞刀1","飞刀2"],
+            },
+            "飞刀1":{
+                mod:{
+    				targetInRange:function(card,player,target,now){
+                        if(card.name=='sha') 
+                            return true;
+    				},
+                },
+    			ai:{
+    				unequip:true
+    			}
+            },
+            "飞刀2":{
+    			trigger:{player:'shaBegin'},
+    			check:function(event,player){
+    				return get.attitude(player,event.target)<=0;
+    			},
+    			logTarget:'target',
+    			filter:function(event,player){
+    				return true;
+    			},
+    			content:function(){
+    				trigger.directHit=true;
+    			},
+            },
+            "幻世":{
+                group:["幻世1","幻世2","幻世3"],
+            },
+            "幻世1":{
+                trigger:{source:'damageEnd'},
+				forced:true,
+				mark:true,
+				filter:function(event){
+					return event.num>0;
+				},
+				init:function(player){
+					player.storage.huanshi=2;
+				},
+				content:function(){
+					player.storage.huanshi ++;
+				},
+				intro:{
+					content:'mark'
+				},
+            },
+            "幻世2":{
+				unique:true,
+				enable:'phaseUse',
+				filter:function(event,player){
+					return player.storage.huanshi&&player.storage.huanshi>=2;
+				},
+                filterTarget:function (card,player,target){
+                    if(player==target)
+                        return false;
+                    return true;
+                },
+                content:function (){
+                    player.storage.huanshi -= 2;
+                    target.turnOver();
+                },
+				mark:true,
+            },
+            "幻世3":{
+                trigger:{source:'damageBegin'},
+				filter:function(event){
+					return event.num>0 && event.player.isTurnedOver();
+				},
+				content:function(){
+					trigger.num ++;
+				},
             },
         },
         translate:{
@@ -1028,6 +1241,17 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "天仪":"天仪",
             "魔炮":"魔炮",
             "彗星":"彗星",
+            "文乐":"文乐",
+            "上海":"上海",
+            "伦敦":"伦敦",
+            "京都":"京都",
+            "飞刀":"飞刀",
+            "飞刀1":"飞刀",
+            "飞刀2":"飞刀",
+            "幻世":"幻世",
+            "幻世1":"幻世",
+            "幻世2":"幻世",
+            "幻世3":"幻世",
             "幻视_info":"幻视调律",
             "狂气_info":"狂气之瞳",
             "红魔_info":"吸血鬼幻想",
@@ -1052,6 +1276,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "天仪_info":"太阳系仪",
             "魔炮_info":"极限火花",
             "彗星_info":"爆裂彗星",
+            "文乐_info":"少女文乐",
+            "飞刀_info":"狂气的杰克",
+            "幻世_info":"The_world",
         },
     },
     intro:"",
@@ -1059,4 +1286,4 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
     diskURL:"",
     forumURL:"",
     version:"1.0",
-},files:{"character":["古明地觉.jpg","雾雨魔理沙.jpg"],"card":[],"skill":[]}}})
+},files:{"character":["爱丽丝.jpg","十六夜咲夜.jpg"],"card":[],"skill":[]}}})
