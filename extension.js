@@ -11,11 +11,14 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "东风谷早苗":["female","wu",3,["奇迹","祈愿","风祝"],["des:幻想乡的现人神"]],
             "藤原妹红":["female","wei",4,["蓬莱","天翔","灭罪"],["des:不老不死的人类"]],
             "蓬莱山辉夜":["female","wei",3,["神宝","难题"],["zhu","des:永远与须臾的罪人"]],
-            "古明地恋":["female","shu",3,["本我","超我","埋火","蔷薇"],["des:紧闭的恋之瞳"]],
+            "古明地恋":["female","shu",3,["本我","超我","埋火"],["des:紧闭的恋之瞳"]],
             "古明地觉":["female","shu",3,["读心","催眠"],["zhu","des:第三只眼"]],
             "雾雨魔理沙":["female","qun",3,["天仪","魔炮","彗星"],["des:普通的魔法使"]],
             "爱丽丝":["female","qun",3,["文乐"],["des:七色的魔法使"]],
-            "十六夜咲夜":["female","shu",3,["飞刀","幻世"],["des:完美潇洒的女仆"]],
+            "十六夜咲夜":["female","shu",4,["飞刀","幻世"],["des:完美潇洒的女仆"]],
+            "魂魄妖梦":["female","qun",4,["六根","业风"],["des:白玉楼的庭师"]],
+            "上白泽慧音":["female","wei",3,["净化","旧史","新史"],["des:一本正经的历史家"]],
+            "西行寺幽幽子":["female","qun",3,[],["zhu","des:华胥的亡灵"]],
         },
         translate:{
             "铃仙":"铃仙",
@@ -29,6 +32,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "雾雨魔理沙":"雾雨魔理沙",
             "爱丽丝":"爱丽丝",
             "十六夜咲夜":"十六夜咲夜",
+            "魂魄妖梦":"魂魄妖梦",
+            "上白泽慧音":"上白泽慧音",
+            "西行寺幽幽子":"西行寺幽幽子",
         },
     },
     card:{
@@ -146,13 +152,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 },
                 ai:{
                     damage:true,
-    				order:8,
-    				result:{
-    					target:function(player,target){
-    						return get.damageEffect(target,player);
-    					}
-    				}
-    			},
+                    order:8,
+                    result:{
+                        target:function (player,target){
+                            return get.damageEffect(target,player);
+                        },
+                    },
+                },
             },
             "破碎":{
                 trigger:{
@@ -354,8 +360,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 },
                 content:function (){
                     trigger.num++;
-                    if(player.isDamaged())
-                        player.recover(1);
                 },
             },
             "天翔2":{
@@ -390,13 +394,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 },
                 ai:{
                     damage:true,
-    				order:8,
-    				result:{
-    					target:function(player,target){
-    						return get.damageEffect(target,player);
-    					}
-    				}
-    			},
+                    order:8,
+                    result:{
+                        target:function (player,target){
+                            return get.damageEffect(target,player);
+                        },
+                    },
+                },
             },
             "神宝":{
                 unique:true,
@@ -850,13 +854,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 },
                 ai:{
                     damage:true,
-    				order:8,
-    				result:{
-    					target:function(player,target){
-    						return get.damageEffect(target,player);
-    					}
-    				}
-    			},
+                    order:8,
+                    result:{
+                        target:function (player,target){
+                            return get.damageEffect(target,player);
+                        },
+                    },
+                },
             },
             "超我":{
                 trigger:{
@@ -1003,13 +1007,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 },
                 ai:{
                     damage:true,
-    				order:8,
-    				result:{
-    					target:function(player,target){
-    						return get.damageEffect(target,player);
-    					}
-    				}
-    			},
+                    order:8,
+                    result:{
+                        target:function (player,target){
+                            return get.damageEffect(target,player);
+                        },
+                    },
+                },
             },
             "彗星":{
                 trigger:{
@@ -1131,54 +1135,58 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             },
             "飞刀1":{
                 mod:{
-    				targetInRange:function(card,player,target,now){
+                    targetInRange:function (card,player,target,now){
                         if(card.name=='sha') 
                             return true;
-    				},
+                    },
                 },
-    			ai:{
-    				unequip:true
-    			}
+                ai:{
+                    unequip:true,
+                },
             },
             "飞刀2":{
-    			trigger:{player:'shaBegin'},
-    			check:function(event,player){
-    				return get.attitude(player,event.target)<=0;
-    			},
-    			logTarget:'target',
-    			filter:function(event,player){
-    				return true;
-    			},
-    			content:function(){
-    				trigger.directHit=true;
-    			},
+                trigger:{
+                    player:"shaBegin",
+                },
+                check:function (event,player){
+                    return get.attitude(player,event.target)<=0;
+                },
+                logTarget:"target",
+                filter:function (event,player){
+                    return true;
+                },
+                content:function (){
+                    trigger.directHit=true;
+                },
             },
             "幻世":{
                 group:["幻世1","幻世2","幻世3"],
             },
             "幻世1":{
-                trigger:{source:'damageEnd'},
-				forced:true,
-				mark:true,
-				filter:function(event){
-					return event.num>0;
-				},
-				init:function(player){
-					player.storage.huanshi=2;
-				},
-				content:function(){
-					player.storage.huanshi ++;
-				},
-				intro:{
-					content:'mark'
-				},
+                trigger:{
+                    source:"damageEnd",
+                },
+                forced:true,
+                mark:true,
+                filter:function (event){
+                    return event.num>0;
+                },
+                init:function (player){
+                    player.storage.huanshi=0;
+                },
+                content:function (){
+                    player.storage.huanshi ++;
+                },
+                intro:{
+                    content:"mark",
+                },
             },
             "幻世2":{
-				unique:true,
-				enable:'phaseUse',
-				filter:function(event,player){
-					return player.storage.huanshi&&player.storage.huanshi>=2;
-				},
+                unique:true,
+                enable:"phaseUse",
+                filter:function (event,player){
+                    return player.storage.huanshi&&player.storage.huanshi>=2;
+                },
                 filterTarget:function (card,player,target){
                     if(player==target)
                         return false;
@@ -1188,16 +1196,138 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                     player.storage.huanshi -= 2;
                     target.turnOver();
                 },
-				mark:true,
+                mark:true,
             },
             "幻世3":{
-                trigger:{source:'damageBegin'},
-				filter:function(event){
-					return event.num>0 && event.player.isTurnedOver();
-				},
-				content:function(){
-					trigger.num ++;
-				},
+                trigger:{
+                    source:"damageBegin",
+                },
+                filter:function (event){
+                    return event.num>0 && event.player.isTurnedOver();
+                },
+                content:function (){
+                    trigger.num ++;
+                },
+            },
+            "六根":{
+                trigger:{
+                    player:["shaBefore"],
+                    target:["shaBefore"],
+                },
+                filter:function (event,player){
+                    return true;
+                },
+                frequent:true,
+                content:function (){
+                    player.draw();
+                },
+            },
+            "业风":{
+                trigger:{
+                    player:"damageEnd",
+                },
+                direct:true,
+                filter:function (event,player){
+                    return (event.source);
+                },
+                content:function (){
+                    player.logSkill("业风",trigger.source);
+                    player.useCard({name:'sha'},trigger.source,false);
+                },
+            },
+            "魂魄":{
+                trigger:{
+                    player:"respond",
+                },
+                filter:function (event,player){
+                    return event.card.name=='shan';
+                },
+                direct:true,
+                forced:true,
+                content:function (){
+                    player.recover(1);
+                },
+            },
+            "净化":{
+    			group:["净化1","净化2"],
+            },
+            "净化1":{
+                trigger:{
+                    player:"damageBegin",
+                },
+                forced:true,
+                filter:function (event){
+                    if(event.nature=='fire' || event.nature=='thunder') 
+                        return true;
+                    else
+                        return false;
+                },
+                content:function (){
+                    trigger.cancel();
+                },
+            },
+            "净化2":{
+    			trigger:{target:'useCardToBefore'},
+    			forced:true,
+    			filter:function(event,player){
+    				return (get.type(event.card)=='delay');
+    			},
+    			content:function(){
+    				trigger.cancel();
+    			},
+            },
+            "旧史":{
+				trigger:{player:'phaseDrawBefore'},
+                direct:true,
+                filter:function(event,player){
+    				return true;
+                },
+                content:function(){
+                    "step 0"
+                    var num=game.countPlayer(function(current){
+    					return true;
+    				});
+                    player.chooseTarget(get.prompt('旧史'),[1,num],function(card,player,target){
+                        return true;
+                    }).set('ai',function(target){
+                        return -get.attitude(_status.event.player,target);
+                    });
+                    "step 1"
+                    if(result.bool){
+                        player.logSkill('旧史',result.targets);
+                        event.targets=result.targets;
+                        event.num=0;
+                    }
+                    else{
+                        event.finish();
+                    }
+                    "step 2"
+                    if(event.num<event.targets.length){
+                        event.targets[event.num].link();
+                        event.num++;
+                        event.redo();
+                    }
+                    "step3"
+                        trigger.cancel();
+                },
+                ai:{
+                    expose:0.3
+                }
+            },
+            "新史":{
+                trigger:{
+                    global:"damageEnd",
+                },
+                forced:true,
+                filter:function (event){
+                    if(event.nature=='fire' || event.nature=='thunder') 
+                        return true;
+                    else
+                        return false;
+                },
+                content:function (){
+                    player.draw(trigger.num);
+                },
             },
         },
         translate:{
@@ -1252,6 +1382,14 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "幻世1":"幻世",
             "幻世2":"幻世",
             "幻世3":"幻世",
+            "六根":"六根",
+            "业风":"业风",
+            "魂魄":"魂魄",
+            "净化":"净化",
+            "净化1":"净化",
+            "净化2":"净化",
+            "旧史":"旧史",
+            "新史":"新史",
             "幻视_info":"幻视调律",
             "狂气_info":"狂气之瞳",
             "红魔_info":"吸血鬼幻想",
@@ -1279,6 +1417,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "文乐_info":"少女文乐",
             "飞刀_info":"狂气的杰克",
             "幻世_info":"The_world",
+            "六根_info":"六根清净斩",
+            "业风_info":"业风闪影阵",
+            "魂魄_info":"三魂七魄",
+            "净化_info":"若有若无的净化",
+            "旧史_info":"旧秘境史",
+            "新史_info":"新幻想史",
         },
     },
     intro:"",
@@ -1286,4 +1430,4 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
     diskURL:"",
     forumURL:"",
     version:"1.0",
-},files:{"character":["爱丽丝.jpg","十六夜咲夜.jpg"],"card":[],"skill":[]}}})
+},files:{"character":["魂魄妖梦.jpg","上白泽慧音.jpg","西行寺幽幽子.jpg"],"card":[],"skill":[]}}})
