@@ -18,7 +18,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "十六夜咲夜":["female","shu",4,["飞刀","幻世"],["des:完美潇洒的女仆"]],
             "魂魄妖梦":["female","qun",4,["六根","业风"],["des:白玉楼的庭师"]],
             "上白泽慧音":["female","wei",3,["净化","旧史","新史"],["des:一本正经的历史家"]],
-            "西行寺幽幽子":["female","qun",3,[],["zhu","des:华胥的亡灵"]],
+            "西行寺幽幽子":["female","qun",3,["埋骨","反魂","墨染"],["zhu","des:华胥的亡灵"]],
         },
         translate:{
             "铃仙":"铃仙",
@@ -888,6 +888,15 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                 content:function (){
                     target.damage(1);
                 },
+                ai:{
+                    damage:true,
+                    order:8,
+                    result:{
+                        target:function (player,target){
+                            return get.damageEffect(target,player);
+                        },
+                    },
+                },
             },
             "蔷薇":{
                 skillAnimation:true,
@@ -1329,6 +1338,106 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
                     player.draw(trigger.num);
                 },
             },
+            "埋骨":{
+                enable:"phaseUse",
+                position:"h",
+                selectCard:1,
+                filterCard:function (card){
+                    return get.suit(card)=='club';
+                },
+                filterTarget:function (card,player,target){
+                    return (player != target && target.countCards('h') < player.countCards('h'));
+                },
+                content:function (){
+                    target.loseHp();
+                },
+                ai:{
+                    damage:true,
+                    order:8,
+                    result:{
+                        target:function (player,target){
+                            return get.damageEffect(target,player);
+                        },
+                    },
+                },
+            },
+            "反魂":{
+                group:["反魂1","反魂2","反魂3"],
+            },
+            "反魂1":{
+                locked:true,
+    			global:'反魂2',
+                trigger:{global:'dying'},
+                priority:15,
+                forced:true,
+                filter:function(event,player){
+                    return _status.currentPhase==player&&event.player!=player;
+                },
+                content:function(){
+    		    },
+            },
+            "反魂2":{
+    			mod:{
+    				cardSavable:function(card,player){
+    					if(!_status.currentPhase) return;
+    					if(_status.currentPhase.hasSkill('反魂1')&&_status.currentPhase!=player){
+    						if(card.name=='tao'&&_status.event.dying!=player) return false;
+    					}
+    				}
+    			}
+            },
+            "反魂3":{
+                unique:true,
+                forced:true,
+    			gainable:true,
+    			trigger:{global:'dieEnd'},
+    			priority:5,
+    			filter:function(event,player){
+    				return true;
+    			},
+    			content:function(){
+                    player.maxHp++;
+                    player.draw(3);
+    			}
+            },
+            "墨染":{
+                unique:true,
+    			global:'墨染2',
+    			zhuSkill:true,
+            },
+            "墨染2":{
+    			trigger:{player:"shaBefore"},
+    			filter:function(event,player){
+    				if(player.group!='qun') return false;
+    				return game.hasPlayer(function(target){
+    					return player!=target&&target.hasZhuSkill('墨染',player);
+    				});
+    			},
+    			direct:true,
+    			content:function(){
+    				'step 0'
+    				var list=game.filterPlayer(function(current){
+    					return current!=player&&current.hasZhuSkill('墨染',player);
+    				});
+                    list.sortBySeat();
+    				event.list=list;
+    				'step 1'
+    				if(event.list.length){
+    					var current=event.list.shift();
+    					event.current=current;
+    					player.chooseBool(get.prompt('墨染',current)).set('choice',get.attitude(player,current)>0);
+    				}
+    				else{
+    					event.finish();
+    				}
+    				'step 2'
+    				if(result.bool){
+    					player.logSkill('墨染',event.current);
+    					event.current.draw();
+    				}
+    				event.goto(1);
+    			}
+            },
         },
         translate:{
             "幻视":"幻视",
@@ -1390,6 +1499,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "净化2":"净化",
             "旧史":"旧史",
             "新史":"新史",
+            "埋骨":"埋骨",
+            "反魂":"反魂",
+            "反魂1":"反魂",
+            "反魂2":"反魂",
+            "反魂3":"反魂",
+            "墨染":"墨染",
+            "墨染2":"墨染",
             "幻视_info":"幻视调律",
             "狂气_info":"狂气之瞳",
             "红魔_info":"吸血鬼幻想",
@@ -1423,6 +1539,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){return {name:"东�
             "净化_info":"若有若无的净化",
             "旧史_info":"旧秘境史",
             "新史_info":"新幻想史",
+            "埋骨_info":"埋骨于弘川",
+            "反魂_info":"反魂蝶",
+            "墨染_info":"完全墨染的樱花",
         },
     },
     intro:"",
